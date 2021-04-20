@@ -1,0 +1,74 @@
+local function PaintBody(NewestCar,Paint)
+	
+	local Body = NewestCar:WaitForChild("Body")
+	local PaintModel = Body:WaitForChild("Paint")
+	local Color = BrickColor.new(Paint.Value)
+
+	if PaintModel then -- Found paint model
+		for i,v in pairs(PaintModel:GetChildren()) do
+			v.BrickColor = Color
+		end
+	end
+end
+
+local function PaintRim(NewestCar,RimColor)
+	local Color = BrickColor.new(RimColor.Value)
+	local Body = NewestCar:WaitForChild("Wheels")
+	
+	for index, descendant in pairs(Body:GetDescendants()) do
+		if descendant.Name == "Rim" then
+			descendant.BrickColor = Color
+		end
+	end
+end
+
+local function Windows(NewestCar,Reflectance)
+	local Windows = NewestCar:WaitForChild("Body"):WaitForChild("Windows")
+	
+	for i,v in pairs(Windows:GetChildren()) do
+		v.Reflectance = Reflectance
+		print(Reflectance)
+	end
+end
+
+
+game.ReplicatedStorage.DealershipEvents:WaitForChild("SpawnCar").OnServerEvent:Connect(function(player,CarName) 
+	local NewCar = game.ServerStorage.ShopCars:FindFirstChild(CarName)
+	local NewestCar = NewCar:Clone()
+	local Paint = player.OwnedColors:FindFirstChild(NewestCar.CarName.Value)
+	local RimColor = player.OwnedRimColor:FindFirstChild(NewestCar.CarName.Value)
+	local Reflectance = player.OwnedReflectance:FindFirstChild(NewestCar.CarName.Value).Value
+	
+	
+	if game.ServerStorage.VehicleOwners:FindFirstChild(player.Name) then
+		if game.ServerStorage.VehicleOwners[player.Name].Value then
+			game.ServerStorage.VehicleOwners[player.Name].Value:Destroy()
+		end 
+		game.ServerStorage.VehicleOwners[player.Name].Value = NewestCar
+	else
+		local CarValue = Instance.new("ObjectValue", game.ServerStorage.VehicleOwners)
+		CarValue.Name = player.Name
+		CarValue.Value = NewestCar
+	end
+	
+
+
+	local pads = game.Workspace.CarSpawns
+	local SpawnPad = pads:FindFirstChild("Pad"..math.random(1,#pads:GetChildren()))
+	NewestCar:SetPrimaryPartCFrame(SpawnPad.CFrame + Vector3.new(0,3,0))
+	wait()
+	NewestCar.Parent = workspace
+	NewestCar.Name = player.Name.."'s Car" 
+	PaintBody(NewestCar,Paint)
+	PaintRim(NewestCar,RimColor)
+	Windows(NewestCar,Reflectance)
+end)
+
+--Player leaves:
+game.Players.PlayerRemoving:connect(function(player)
+	if game.ServerStorage.VehicleOwners:FindFirstChild(player.Name) then
+		local val = game.ServerStorage.VehicleOwners:FindFirstChild(player.Name)
+		if val.Value then val.Value:Destroy() end
+		val:Destroy()
+	end
+end)
