@@ -1,0 +1,12 @@
+local TextBox = script.Parent
+
+TextBox:GetPropertyChangedSignal("Text"):Connect(function()
+	if tonumber(TextBox.Text) then
+		if tonumber(TextBox.Text) >1 then
+			TextBox.Text = ""
+		end
+	elseif not tonumber(TextBox.Text) then
+		print(" U nob, why you trying to type letters")
+		TextBox.Text = ""
+	end
+end)
