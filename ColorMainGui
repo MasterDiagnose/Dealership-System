@@ -1,0 +1,7 @@
+for i,v in pairs(script.Parent.Frame:GetChildren()) do
+	v.MouseButton1Down:Connect(function()
+		print(v.Name.." is down")
+		local Color = BrickColor.new(v.BackgroundColor3)
+		script.Parent.ColorValue.Value = Color
+	end)
+end
