@@ -1,0 +1,138 @@
+local Player = game.Players.LocalPlayer
+---SETTINGS
+local PaintCost = 100
+local RimCost = 75
+local ReflectanceCost = 50
+local Garage = 0
+--Frames
+local ButtonsFrame = script.Parent:WaitForChild("ButtonsFrame")
+local ColorFrame = script.Parent:WaitForChild("ColorPaint")
+local RimFrame = script.Parent:WaitForChild("RimPaint")
+local ReflectanceFrame = script.Parent:WaitForChild("WindowReflectance")
+---Proximity Propmt
+local Enter1 = game.Workspace.Garage.Enter1.ProximityPrompt
+local Enter2 = game.Workspace.Garage.Enter2.ProximityPrompt
+---
+local GUI = script.Parent.Parent
+---
+local PaintEvent = game.ReplicatedStorage.CustomizationEvents.ColorPaint
+local RimEvent = game.ReplicatedStorage.CustomizationEvents.RimPaint
+local WindowReflectance = game.ReplicatedStorage.CustomizationEvents.WindowReflectance
+local TeleportEvent = game.ReplicatedStorage.CustomizationEvents.TeleportEvent
+---
+local ColorApply = ColorFrame:WaitForChild("Apply")
+local RimApply = RimFrame:WaitForChild("Apply")
+local RefApply = ReflectanceFrame:WaitForChild("Apply")
+---
+local Garage1Yes = script.Parent.Garage1
+local Garage2Yes = script.Parent.Garage2
+---
+
+local function CameraOn()
+	GUI.Enabled = true
+	if Garage == 1 then
+		game.Workspace.Camera.CameraSubject = game.Workspace.Garage.Teleport1
+	elseif Garage == 2 then
+		game.Workspace.Camera.CameraSubject = game.Workspace.Garage.Teleport2
+		end
+end
+Enter1.Triggered:Connect(function(player)
+	if Garage1Yes.Value == false then
+		Garage = 1
+		TeleportEvent:FireServer(Garage)
+		wait(1)
+		CameraOn()
+	end
+end)
+
+Enter2.Triggered:Connect(function(player)
+	if Garage2Yes.Value == false then
+		Garage = 2
+		TeleportEvent:FireServer(Garage)
+		wait(1)
+		CameraOn()
+	end
+end)
+
+ColorApply.MouseButton1Down:Connect(function()
+	if Player.leaderstats.Money.Value > PaintCost then
+		PaintEvent:FireServer(PaintCost)
+	end
+end)
+
+
+RimApply.MouseButton1Down:Connect(function()
+	if Player.leaderstats.Money.Value > PaintCost then
+		RimEvent:FireServer(RimCost)
+	end
+end)
+
+RefApply.MouseButton1Down:Connect(function()
+	if Player.leaderstats.Money.Value > ReflectanceCost then
+		local Reflectance = ReflectanceFrame.Reflectance.Text
+		WindowReflectance:FireServer(Reflectance,ReflectanceCost)
+	end
+end)
+
+
+
+ButtonsFrame.CloseButton.MouseButton1Down:Connect(function() -- Closing Paint GUI
+	GUI.Enabled = false
+	ButtonsFrame.Visible = true
+	ColorFrame.Visible = false
+	RimFrame.Visible = false
+	ReflectanceFrame.Visible = false
+    game.Workspace.Camera.CameraSubject = Player.Character.Humanoid
+	local Exit = 0
+	if Garage == 1 then
+		Exit = 1
+		game.ReplicatedStorage.CustomizationEvents.ExitGarage:FireServer(Exit)
+	elseif Garage == 2 then
+		Exit = 2
+		game.ReplicatedStorage.CustomizationEvents.ExitGarage:FireServer(Exit)
+	end
+end)
+
+ButtonsFrame.BodyColor.MouseButton1Down:Connect(function() -- Color frame visible
+	ButtonsFrame.Visible = false
+	ColorFrame.Visible = true
+	RimFrame.Visible = false
+	ReflectanceFrame.Visible = false
+end)
+
+ColorFrame.Back.MouseButton1Down:Connect(function() -- Back button clicked
+	ButtonsFrame.Visible = true
+	ColorFrame.Visible = false
+	RimFrame.Visible = false
+	ReflectanceFrame.Visible = false
+end)
+
+
+ButtonsFrame.RimColor.MouseButton1Down:Connect(function() -- Rim color button clicked
+	ButtonsFrame.Visible = false
+	ColorFrame.Visible = false
+	RimFrame.Visible = true
+	ReflectanceFrame.Visible = false
+end)
+
+RimFrame.Back.MouseButton1Down:Connect(function() -- back button clicked
+	ButtonsFrame.Visible = true
+	ColorFrame.Visible = false
+	RimFrame.Visible = false
+	ReflectanceFrame.Visible = false
+end)
+
+ButtonsFrame.WindowReflectance.MouseButton1Down:Connect(function() -- Refectance button clicked
+	ButtonsFrame.Visible = false
+	ColorFrame.Visible = false
+	RimFrame.Visible = false
+	ReflectanceFrame.Visible = true
+end)
+
+
+ReflectanceFrame.Back.MouseButton1Down:Connect(function() -- back button clicked
+	ButtonsFrame.Visible = true
+	ColorFrame.Visible = false
+	RimFrame.Visible = false
+	ReflectanceFrame.Visible = false
+end)
