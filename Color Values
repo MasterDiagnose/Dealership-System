@@ -1,0 +1,56 @@
+local players = game:GetService("Players")
+local dataStore = game:GetService("DataStoreService")
+---Car 1
+local PoliceCarColorDataStore = dataStore:GetDataStore("Yes1")
+local PoliceCarColorDataStore1 = dataStore:GetDataStore("Yes2")
+local PoliceCarColorDataStore2 = dataStore:GetDataStore("Yes3")
+--Car 2
+
+
+players.PlayerAdded:Connect(function(player)
+	local folder = Instance.new("Folder")
+	folder.Name = "OwnedColors"
+	folder.Parent = player
+	
+	local folder2 = Instance.new("Folder", player)
+	folder2.Name = "OwnedRimColor"
+	
+	local folder3 = Instance.new("Folder")
+	folder3.Name = "OwnedReflectance"
+	folder3.Parent = player
+
+	
+	local car1 = Instance.new("StringValue")
+	car1.Name = "Police Car"
+	car1.Parent = player.OwnedColors
+	car1.Value = PoliceCarColorDataStore:GetAsync(player.UserId) or "Institutional white"
+	PoliceCarColorDataStore:SetAsync(player.UserId, car1.Value)
+	
+	local car1Rim = Instance.new("StringValue")
+	car1Rim.Name = "Police Car"
+	car1Rim.Parent = player.OwnedRimColor
+	car1Rim.Value = PoliceCarColorDataStore1:GetAsync(player.UserId) or "Institutional white"
+	PoliceCarColorDataStore1:SetAsync(player.UserId, car1Rim.Value)
+	
+	local car1relfectance = Instance.new("NumberValue")
+	car1relfectance.Name = "Police Car"
+	car1relfectance.Parent = player.OwnedReflectance
+	car1relfectance.Value = PoliceCarColorDataStore2:GetAsync(player.UserId) or 0
+	PoliceCarColorDataStore2:SetAsync(player.UserId, car1relfectance.Value)
+	
+	---
+    ---Car 1
+	car1.Changed:Connect(function()
+		PoliceCarColorDataStore:SetAsync(player.UserId, car1.Value)
+	end)
+	
+	car1Rim.Changed:Connect(function()
+		PoliceCarColorDataStore1:SetAsync(player.UserId, car1Rim.Value)
+	end)
+	
+	car1relfectance.Changed:Connect(function()
+		PoliceCarColorDataStore2:SetAsync(player.UserId, car1relfectance.Value)
+	end)
+	
+	---Car 2
+end)
