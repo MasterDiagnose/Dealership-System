@@ -22,19 +22,19 @@ players.PlayerAdded:Connect(function(player)
 	
 	local car1 = Instance.new("StringValue")
 	car1.Name = "Police Car"
-	car1.Parent = player.OwnedColors
+	car1.Parent = player:WaitForChild("OwnedColors")
 	car1.Value = PoliceCarColorDataStore:GetAsync(player.UserId) or "Institutional white"
 	PoliceCarColorDataStore:SetAsync(player.UserId, car1.Value)
 	
 	local car1Rim = Instance.new("StringValue")
 	car1Rim.Name = "Police Car"
-	car1Rim.Parent = player.OwnedRimColor
+	car1Rim.Parent = player:WaitForChild("OwnedRimColor")
 	car1Rim.Value = PoliceCarColorDataStore1:GetAsync(player.UserId) or "Institutional white"
 	PoliceCarColorDataStore1:SetAsync(player.UserId, car1Rim.Value)
 	
 	local car1relfectance = Instance.new("NumberValue")
 	car1relfectance.Name = "Police Car"
-	car1relfectance.Parent = player.OwnedReflectance
+	car1relfectance.Parent = player:WaitForChild("OwnedReflectance")
 	car1relfectance.Value = PoliceCarColorDataStore2:GetAsync(player.UserId) or 0
 	PoliceCarColorDataStore2:SetAsync(player.UserId, car1relfectance.Value)
 	
